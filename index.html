@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <title>AMICUS |AI-POWERED COMPANION|</title>
+</head>
+<body>
+   
+<!-- Navbar Section -->
+    <nav class="navbar">
+        <div class="navbar-container container">
+            <input type="checkbox"> 
+            <div class="hamburger-lines">
+                <span class="line line1"></span>
+                <span class="line line2"></span>
+                <span class="line line3"></span>
+            </div>
+            <ul class="menu-items">
+                <li><a href="#showcase">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#">Talk To Amicus</a></li>
+            </ul>
+            <h1 class="logo">AMICUS</h1>
+        </div>
+    </nav>
+    <section class="showcase-area" id="showcase">
+        <div class="showcase-container">
+            <h1 class="main-title">AMICUS-An AI Powered Companion</h1>
+            <p>-Your Silent Ally in Tough Times-</p>
+            <a href="#about" class="btn btn-primary">About Us</a>
+        </div>
+    </section>
+
+<!-- About Section -->
+    <sectionn id="about">
+        <div class="about-wrapper container">
+            <div class="about-text">
+                <p class="small">About Us</p>
+                <h2>AMICUS | AI That Cares, Anytime, Anywhere</h2><br>
+                <p>AMICUS is like having a trusted friend who's always there for you. it listens when you need to talk, helps you manage stress, and gives you advice that actually makes sense - all powered by smart AI that undetstands how you feel. </p><br>
+                <p>AMICUS is an AI-Powered mental health companion desingned to provide real time emotional support, personalized advice, and mood tracking. Available 24/7, it combines AI-driven insights with human-like emphathy to help users manage stress, anxiety, and emotional challenges while ensuring privacy and security. </p>
+            </div>
+            <div class="about-img">
+                <img src="./images/Amicus.webp" alt="About Us">
+            </div>
+        </div>
+    </section>
+
+<!-- Features Section -->
+    <section id="features">
+        <h2>Features</h2>
+        <div class="features-container container">
+            <div class="food-type fruit">
+                <div class="img-container">
+                    <img src="./images/Robo-friend.jpg" alt="">
+                    <div class="img-content">
+                        <h3>Real-Time Emotional Support</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="food-type vegetable">
+                <div class="img-container">
+                    <img src="./images/personalized guidance.png" alt="Personalized Guidance">
+                    <div class="img-content">
+                        <h3>Personalized <br> Guidance</h3>
+                    </div>
+                </div>
+
+            </div>
+            <div class="food-type grain">
+                <div class="img-container">
+                    <img src="./images/psychytrist.jpg" alt="">
+                    <div class="img-content">
+                        <h3>Human <br> Connection Available</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Footer Section -->
+ <footer id="footer">
+  <h2>| AMICUS - AI-Powered Companion | &copy; All Rights Reserved</h2>
+ </footer>
+
+ <!-- smooth scrolling -->
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  // Add smooth scrolling to all links
+  $("a").on('click', function(event) {
+
+    // Make sure this.hash has a value before overriding default behavior
+    if (this.hash !== "") {
+      // Prevent default anchor click behavior
+      event.preventDefault();
+
+      // Store hash
+      var hash = this.hash;
+
+      // Using jQuery's animate() method to add smooth page scroll
+      // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 800, function(){
+
+        // Add hash (#) to URL when done scrolling (default click behavior)
+        window.location.hash = hash;
+      });
+    } // End if
+  });
+});
+</script>
+
+</body>
+</html>
