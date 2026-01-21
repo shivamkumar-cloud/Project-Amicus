@@ -226,6 +226,23 @@ body{
     top: 40%;
 }
 
+/* collaborators & partners  */
+.collaboartors{
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 400;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    color: #555;
+}
+.Explorer-hub{
+    display: block;
+    width: 100%;
+    margin: auto;
+    max-height: 200px;
+    object-fit: cover;
+    object-position: right;
+}
 /* Footer Section */
 #footer h2{
     text-align: center;
@@ -236,5 +253,4 @@ body{
     background: #656565;
 }
 
-/* media Querires */
  

@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk to AMICUS | AI Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --secondary: #06d6a0;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .chat-header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--secondary);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--light);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 2px solid var(--gray-light);
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateX(-5px);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Chat Header Info */
+        .chat-info {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .bot-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .bot-avatar i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .bot-name {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .bot-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            animation: statusPulse 1.5s infinite;
+        }
+
+        /* Chat Messages Area */
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 500px;
+            background-color: #f9fafb;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            animation: messageSlide 0.3s ease;
+        }
+
+        .message.bot {
+            align-items: flex-start;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+            align-items: flex-start;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin: 0 10px;
+        }
+
+        .bot .message-avatar {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .user .message-avatar {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .bot .message-content {
+            background-color: white;
+            border: 1px solid var(--gray-light);
+            border-top-left-radius: 5px;
+        }
+
+        .user .message-content {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-top-right-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 15px 20px;
+            background-color: white;
+            border-radius: 18px;
+            width: fit-content;
+            border: 1px solid var(--gray-light);
+            margin-bottom: 20px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--gray);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-action-btn {
+            background-color: white;
+            border: 1px solid var(--primary-light);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quick-action-btn:hover {
+            background-color: var(--primary-light);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            padding: 20px 25px;
+            background-color: white;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--gray-light);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05) rotate(10deg);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .send-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Mood Selector */
+        .mood-selector {
+            padding: 15px 25px;
+            background-color: #f0f9ff;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .mood-title {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mood-options {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .mood-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 80px;
+        }
+
+        .mood-option:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        .mood-option.active {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+
+        .mood-emoji {
+            font-size: 1.8rem;
+        }
+
+        .mood-label {
+            font-size: 0.8rem;
+            color: var(--dark);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+            30% {
+                transform: translateY(-5px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chat-container {
+                margin: 15px;
+                height: calc(100vh - 120px);
+            }
+            
+            .chat-messages {
+                max-height: none;
+                flex: 1;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .mood-options {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-info {
+                padding: 20px 15px;
+            }
+            
+            .bot-avatar {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .bot-avatar i {
+                font-size: 2rem;
+            }
+            
+            .message-avatar {
+                width: 35px;
+                height: 35px;
+                margin: 0 8px;
+            }
+            
+            .chat-input {
+                padding: 12px 15px;
+            }
+            
+            .send-btn {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="chat-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-robot"></i>
+                    AMICUS
+                </a>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Chat Container -->
+    <div class="container">
+        <div class="chat-container">
+            <!-- Chat Header Info -->
+            <div class="chat-info">
+                <div class="bot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h2 class="bot-name">AMICUS Companion</h2>
+                <div class="bot-status">
+                    <div class="status-dot"></div>
+                    <span>Online & Listening</span>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Initial welcome message -->
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello there! 👋 I'm AMICUS, your AI companion for emotional support and mental wellbeing. I'm here to listen, understand, and help you navigate through tough times.</p>
+                        <p>How are you feeling today?</p>
+                        
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" data-message="I'm feeling stressed">😰 Stressed</button>
+                            <button class="quick-action-btn" data-message="I'm feeling anxious">😟 Anxious</button>
+                            <button class="quick-action-btn" data-message="I'm feeling sad">😔 Sad</button>
+                            <button class="quick-action-btn" data-message="I'm feeling okay">😌 Okay</button>
+                        </div>
+                        
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+                
+                <!-- Typing indicator (hidden by default) -->
+                <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+
+            <!-- Mood Selector -->
+            <div class="mood-selector">
+                <div class="mood-title">
+                    <i class="fas fa-heartbeat"></i>
+                    Select your current mood:
+                </div>
+                <div class="mood-options">
+                    <div class="mood-option" data-mood="happy">
+                        <span class="mood-emoji">😊</span>
+                        <span class="mood-label">Happy</span>
+                    </div>
+                    <div class="mood-option" data-mood="calm">
+                        <span class="mood-emoji">😌</span>
+                        <span class="mood-label">Calm</span>
+                    </div>
+                    <div class="mood-option" data-mood="neutral">
+                        <span class="mood-emoji">😐</span>
+                        <span class="mood-label">Neutral</span>
+                    </div>
+                    <div class="mood-option" data-mood="stressed">
+                        <span class="mood-emoji">😰</span>
+                        <span class="mood-label">Stressed</span>
+                    </div>
+                    <div class="mood-option" data-mood="sad">
+                        <span class="mood-emoji">😔</span>
+                        <span class="mood-label">Sad</span>
+                    </div>
+                    <div class="mood-option" data-mood="anxious">
+                        <span class="mood-emoji">😟</span>
+                        <span class="mood-label">Anxious</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input type="text" class="chat-input" id="userInput" placeholder="Type your message here...">
+                    <button class="send-btn" id="sendButton">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const moodOptions = document.querySelectorAll('.mood-option');
+        const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+        
+        // Current mood state
+        let currentMood = 'neutral';
+        
+        // Bot responses database
+        const botResponses = {
+            greetings: [
+                "Hello! How can I support you today?",
+                "Hi there! I'm here to listen. What's on your mind?",
+                "Welcome back! How are you feeling today?",
+                "Hello! I'm AMICUS, ready to help you navigate your emotions."
+            ],
+            stressed: [
+                "I hear you're feeling stressed. Let's try some deep breathing together. Inhale for 4 seconds, hold for 4, exhale for 6. Repeat this 3 times.",
+                "Stress can feel overwhelming. Would you like to talk about what's causing it? Sometimes sharing helps lighten the load.",
+                "When I'm stressed, I find it helpful to break things down into smaller, manageable steps. What's one small thing you can do right now?",
+                "Remember to be kind to yourself. Stress is a natural response, and it's okay to take a moment for yourself."
+            ],
+            anxious: [
+                "Anxiety can make everything feel bigger than it is. Try the 5-4-3-2-1 grounding technique: Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, and 1 you taste.",
+                "I'm here with you. Anxiety is tough, but it's temporary. Let's focus on your breathing for a moment.",
+                "Would it help to write down what's making you anxious? Sometimes getting it out of your head and onto paper reduces its power.",
+                "Remember that you've gotten through anxious moments before. This too shall pass."
+            ],
+            sad: [
+                "I'm sorry you're feeling sad. It's okay to feel this way. Would you like to share what's on your heart?",
+                "Sadness is a valid emotion. Sometimes the kindest thing we can do is acknowledge it without judgment.",
+                "When I feel sad, I find comfort in small comforts—a warm drink, a cozy blanket, or talking to someone who understands.",
+                "You're not alone in this. I'm here with you, and your feelings matter."
+            ],
+            default: [
+                "Thank you for sharing that with me. How does that make you feel?",
+                "I appreciate you opening up. Tell me more about that if you'd like.",
+                "I'm listening. What else is on your mind?",
+                "That sounds important. Would you like to explore that feeling further?",
+                "Thank you for trusting me with that. How can I best support you right now?"
+            ],
+            positive: [
+                "That's wonderful to hear! Celebrating the good moments is important too.",
+                "I'm so glad you're feeling positive! What's contributing to this good mood?",
+                "It's great to acknowledge when you're feeling good. Savor these moments.",
+                "Positive emotions are worth nurturing. What's bringing you joy today?"
+            ],
+            coping: [
+                "Mindful breathing can help center you. Try focusing on your breath for just one minute.",
+                "Sometimes a short walk can shift your perspective. Even 5 minutes outside can help.",
+                "Journaling can be therapeutic. Write without editing—just let your thoughts flow.",
+                "Progressive muscle relaxation can help release tension. Tense each muscle group for 5 seconds, then release."
+            ]
+        };
+        
+        // Initialize chat
+        function initChat() {
+            // Focus on input
+            userInput.focus();
+            
+            // Set initial mood
+            document.querySelector('.mood-option[data-mood="neutral"]').classList.add('active');
+        }
+        
+        // Add message to chat
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-${isUser ? 'user' : 'robot'}"></i>
+                </div>
+                <div class="message-content">
+                    <p>${text}</p>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+            
+            // Add animation
+            messageDiv.style.animation = 'messageSlide 0.3s ease';
+        }
+        
+        // Show typing indicator
+        function showTyping() {
+            typingIndicator.style.display = 'flex';
+            scrollToBottom();
+        }
+        
+        // Hide typing indicator
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+        
+        // Scroll to bottom of chat
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Get bot response
+        function getBotResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            // Check for keywords
+            if (message.includes('stress') || message.includes('overwhelm') || message.includes('pressure')) {
+                return getRandomResponse('stressed');
+            } else if (message.includes('anxious') || message.includes('anxiety') || message.includes('worr') || message.includes('panic')) {
+                return getRandomResponse('anxious');
+            } else if (message.includes('sad') || message.includes('depress') || message.includes('down') || message.includes('hopeless')) {
+                return getRandomResponse('sad');
+            } else if (message.includes('happy') || message.includes('good') || message.includes('great') || message.includes('excited') || message.includes('joy')) {
+                return getRandomResponse('positive');
+            } else if (message.includes('help') || message.includes('cope') || message.includes('deal') || message.includes('manage')) {
+                return getRandomResponse('coping');
+            } else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return getRandomResponse('greetings');
+            } else {
+                return getRandomResponse('default');
+            }
+        }
+        
+        // Get random response from category
+        function getRandomResponse(category) {
+            const responses = botResponses[category];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        // Process user message
+        function processUserMessage() {
+            const message = userInput.value.trim();
+            
+            if (message === '') return;
+            
+            // Add user message
+            addMessage(message, true);
+            userInput.value = '';
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate bot thinking
+            setTimeout(() => {
+                hideTyping();
+                
+                // Get and add bot response
+                const response = getBotResponse(message);
+                addMessage(response);
+                
+                // Add quick actions based on response type
+                addQuickActions(response);
+            }, 1500 + Math.random() * 1000);
+        }
+        
+        // Add quick action buttons
+        function addQuickActions(response) {
+            // Remove existing quick actions (except in bot messages)
+            document.querySelectorAll('.quick-actions').forEach(el => {
+                if (!el.closest('.message').classList.contains('bot')) {
+                    el.remove();
+                }
+            });
+            
+            // Add new quick actions to bot message
+            const lastBotMessage = document.querySelector('.message.bot:last-child .message-content p:last-child');
+            
+            if (lastBotMessage) {
+                const quickActions = document.createElement('div');
+                quickActions.className = 'quick-actions';
+                
+                // Add relevant quick actions based on conversation
+                if (response.includes('breathing') || response.includes('stress')) {
+                    quickActions.innerHTML = `
+                        <button class="quick-action-btn" data-message="Can we try another breathing exercise?">🫁 Breathing Exercise</button>
+                        <button class="quick-action-btn" data-message="What else helps with stress?">😰 More Stress Tips</button>
+                        <button class="quick-action-btn" data-message="I'm feeling a bit better">😌 Feeling Better</button>
+                    `;
+                } else if (response.includes('anxious') || response.includes('grounding')) {
+                    quickActions.innerHTML = `
+                        <button class="quick-action-btn" data-message="Can you explain the grounding technique again?">🌍 Grounding Technique</button>
+                        <button class="quick-action-btn" data-message="What if the anxiety doesn't go away?">😟 Persistent Anxiety</button>
+                        <button class="quick-action-btn" data-message="I tried it and it helped">👍 It Helped</button>
+                    `;
+                } else {
+                    quickActions.innerHTML = `
+                        <button class="quick-action-btn" data-message="I need coping strategies">🛡️ Coping Strategies</button>
+                        <button class="quick-action-btn" data-message="Can we talk about something positive?">😊 Positive Talk</button>
+                        <button class="quick-action-btn" data-message="I'm not sure what to say">🤔 Not Sure</button>
+                    `;
+                }
+                
+                lastBotMessage.after(quickActions);
+                
+                // Add event listeners to new buttons
+                document.querySelectorAll('.quick-action-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const message = this.getAttribute('data-message');
+                        userInput.value = message;
+                        processUserMessage();
+                    });
+                });
+            }
+        }
+        
+        // Event Listeners
+        sendButton.addEventListener('click', processUserMessage);
+        
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                processUserMessage();
+            }
+        });
+        
+        // Mood selector
+        moodOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all
+                moodOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to clicked
+                this.classList.add('active');
+                
+                // Update current mood
+                currentMood = this.getAttribute('data-mood');
+                
+                // Send mood message
+                const moodMessages = {
+                    happy: "I'm feeling pretty good today! 😊",
+                    calm: "I'm feeling calm and centered. 🧘",
+                    neutral: "I'm feeling okay, nothing special. 😐",
+                    stressed: "I'm feeling stressed and overwhelmed. 😰",
+                    sad: "I'm feeling sad and down. 😔",
+                    anxious: "I'm feeling anxious and worried. 😟"
+                };
+                
+                if (moodMessages[currentMood]) {
+                    userInput.value = moodMessages[currentMood];
+                    processUserMessage();
+                }
+            });
+        });
+        
+        // Quick action buttons
+        quickActionButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const message = this.getAttribute('data-message');
+                userInput.value = message;
+                processUserMessage();
+            });
+        });
+        
+        // Initialize chat
+        document.addEventListener('DOMContentLoaded', initChat);
+        
+        // Add some interactive effects
+        document.querySelectorAll('.mood-option').forEach(option => {
+            option.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            option.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        // Add a welcome effect
+        setTimeout(() => {
+            document.querySelector('.bot-avatar').style.animation = 'pulse 1s ease';
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -3,119 +3,958 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css">
-    <title>AMICUS |AI-POWERED COMPANION|</title>
+    <title>AMICUS | AI-Powered Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="html" href="chatbot.html">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --secondary: #06d6a0;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .header-scrolled {
+            padding: 10px 0;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            transition: var(--transition);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+            opacity: 0.15;
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .hero-text {
+            flex: 1;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .hero-text .tagline {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
+            border: 2px solid var(--primary);
+        }
+
+        .cta-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.4);
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .hero-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .ai-bot {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.5s ease;
+        }
+
+        .ai-bot:hover {
+            transform: scale(1.03);
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .floating-element {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: -20px;
+            left: -20px;
+            animation-delay: 0s;
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 50px;
+            height: 50px;
+            bottom: 30px;
+            right: -10px;
+            animation-delay: 0.5s;
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 40px;
+            height: 40px;
+            top: 50%;
+            right: -15px;
+            animation-delay: 1s;
+            background-color: white;
+            color: var(--primary);
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
+
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: var(--gray);
+        }
+
+        .features {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .feature {
+            background-color: var(--light);
+            padding: 25px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            color: var(--gray);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 70px 0 30px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .footer-section p {
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-light);
+            padding-left: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive Design */
+        /* Tablets */
+        @media (max-width: 992px) {
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero-text .tagline {
+                font-size: 1.5rem;
+            }
+            
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .features {
+                width: 100%;
+            }
+        }
+
+        /* Large Phones */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero {
+                padding: 150px 0 80px;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.3rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+
+        /* Small Phones */
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-text .tagline {
+                font-size: 1.3rem;
+            }
+            
+            .hero-text p {
+                font-size: 1rem;
+            }
+            
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
+            .feature {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-   
-<!-- Navbar Section -->
-    <nav class="navbar">
-        <div class="navbar-container container">
-            <input type="checkbox"> 
-            <div class="hamburger-lines">
-                <span class="line line1"></span>
-                <span class="line line2"></span>
-                <span class="line line3"></span>
-            </div>
-            <ul class="menu-items">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="./index.html/#features">Features</a></li>
-                <li><a href="Amicus.html">Talk To Amicus</a></li>
-            </ul>
-            <h1 class="logo">AMICUS</h1>
+    <!-- Header & Navigation -->
+    <header id="header">
+        <div class="container">
+            <nav class="nav-container">
+                <a href="#" class="logo">
+                    <i class="fas fa-robot"></i>
+                    AMICUS
+                </a>
+                
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
         </div>
-    </nav>
-    <section class="showcase-area" id="showcase">
-        <div class="showcase-container">
-            <h1 class="main-title">AMICUS-An AI Powered Companion</h1>
-            <p>-Your Silent Ally in Tough Times-</p>
-            <a href="#about" class="btn btn-primary">About Us</a>
-        </div>
-    </section>
+    </header>
 
-<!-- About Section -->
-    <sectionn id="about">
-        <div class="about-wrapper container">
-            <div class="about-text">
-                <p class="small">About Us</p>
-                <h2>AMICUS | AI That Cares, Anytime, Anywhere</h2><br>
-                <p>AMICUS is like having a trusted friend who's always there for you. it listens when you need to talk, helps you manage stress, and gives you advice that actually makes sense - all powered by smart AI that undetstands how you feel. </p><br>
-                <p>AMICUS is an AI-Powered mental health companion desingned to provide real time emotional support, personalized advice, and mood tracking. Available 24/7, it combines AI-driven insights with human-like emphathy to help users manage stress, anxiety, and emotional challenges while ensuring privacy and security. </p>
-            </div>
-            <div class="about-img">
-                <img src="./images/Amicus.webp" alt="About Us">
-            </div>
-        </div>
-    </section>
-
-<!-- Features Section -->
-    <section id="features">
-        <h2>Features</h2>
-        <div class="features-container container">
-            <div class="food-type fruit">
-                <div class="img-container">
-                    <img src="./images/Robo-friend.jpg" alt="">
-                    <div class="img-content">
-                        <h3>Real-Time Emotional Support</h3>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>AMICUS</h1>
+                    <div class="tagline">Your Silent Ally in Tough Times</div>
+                    <p>AMICUS is an AI-Powered mental health companion designed to provide real-time emotional support, personalized advice, and mood tracking. Available 24/7, it combines AI-driven insights with human-like empathy to help you manage stress, anxiety, and emotional challenges.</p>
+                    <a href="#about" class="cta-button">Start Your Journey</a>
                 </div>
-            </div>
-            <div class="food-type vegetable">
-                <div class="img-container">
-                    <img src="./images/personalized guidance.png" alt="Personalized Guidance">
-                    <div class="img-content">
-                        <h3>Personalized <br> Guidance</h3>
-                    </div>
-                </div>
-
-            </div>
-            <div class="food-type grain">
-                <div class="img-container">
-                    <img src="./images/psychytrist.jpg" alt="">
-                    <div class="img-content">
-                        <h3>Human <br> Connection Available</h3>
+                
+                <div class="hero-image">
+                    <div class="hero-image-container">
+                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Companion" class="ai-bot">
+                        
+                        <div class="floating-elements">
+                            <div class="floating-element">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="floating-element">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="floating-element">
+                                <i class="fas fa-headphones"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
 
-<!-- Footer Section -->
- <footer id="footer">
-  <h2>| AMICUS - AI-Powered Companion | &copy; All Rights Reserved</h2>
- </footer>
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">AMICUS | AI That Cares, Anytime, Anywhere</h2>
+            <p class="section-subtitle">Your trusted friend who's always there for you. AMICUS listens when you need to talk, helps you manage stress, and gives you advice that actually makes sense.</p>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>AMICUS is like having a trusted friend who's always there for you. It listens when you need to talk, helps you manage stress, and gives you advice that actually makes sense - all powered by smart AI that understands how you feel.</p>
+                    <p>Our AI companion is designed with empathy at its core. Using advanced natural language processing and emotional intelligence algorithms, AMICUS can recognize subtle cues in your language to provide truly personalized support.</p>
+                    <p>Privacy and security are our top priorities. All conversations with AMICUS are encrypted end-to-end, and we never share your personal data with third parties.</p>
+                </div>
+                
+                <div class="features" id="features">
+                    <div class="feature">
+                        <i class="fas fa-comments"></i>
+                        <h3>24/7 Availability</h3>
+                        <p>Always available when you need someone to talk to, day or night, without judgment.</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Mood Tracking</h3>
+                        <p>Track your emotional patterns over time with insightful visualizations and reports.</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <i class="fas fa-user-shield"></i>
+                        <h3>Privacy Focused</h3>
+                        <p>Your conversations are encrypted and never shared with anyone else.</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Personalized Advice</h3>
+                        <p>Receive tailored suggestions based on your unique emotional patterns and needs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
- <!-- smooth scrolling -->
+    <!-- Floating Chat Icon -->
+<div class="floating-chat-icon" id="chatIcon">
+    <div class="chat-icon-container">
+        <i class="fas fa-comment-dots"></i>
+        <span class="chat-text">Talk to AMICUS</span>
+    </div>
+    <div class="chat-notification">1</div>
+</div>
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-$(document).ready(function(){
-  // Add smooth scrolling to all links
-  $("a").on('click', function(event) {
-
-    // Make sure this.hash has a value before overriding default behavior
-    if (this.hash !== "") {
-      // Prevent default anchor click behavior
-      event.preventDefault();
-
-      // Store hash
-      var hash = this.hash;
-
-      // Using jQuery's animate() method to add smooth page scroll
-      // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-      $('html, body').animate({
-        scrollTop: $(hash).offset().top
-      }, 800, function(){
-
-        // Add hash (#) to URL when done scrolling (default click behavior)
-        window.location.hash = hash;
-      });
-    } // End if
-  });
-});
+    // Floating Chat Icon
+    const chatIcon = document.getElementById('chatIcon');
+    
+    chatIcon.addEventListener('click', () => {
+        window.location.href = 'chatbot.html';
+    });
+    
+    // Make the icon draggable on desktop
+    let isDragging = false;
+    let offsetX, offsetY;
+    
+    chatIcon.addEventListener('mousedown', (e) => {
+        if (window.innerWidth > 768) { // Only on desktop
+            isDragging = true;
+            offsetX = e.clientX - chatIcon.getBoundingClientRect().left;
+            offsetY = e.clientY - chatIcon.getBoundingClientRect().top;
+            chatIcon.style.cursor = 'grabbing';
+        }
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging && window.innerWidth > 768) {
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            
+            // Keep within viewport bounds
+            const maxX = window.innerWidth - chatIcon.offsetWidth;
+            const maxY = window.innerHeight - chatIcon.offsetHeight;
+            
+            chatIcon.style.left = `${Math.max(20, Math.min(x, maxX - 20))}px`;
+            chatIcon.style.top = `${Math.max(20, Math.min(y, maxY - 20))}px`;
+        }
+    });
+    
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        chatIcon.style.cursor = 'pointer';
+    });
+    
+    // Add bounce animation
+    setInterval(() => {
+        chatIcon.classList.add('bounce');
+        setTimeout(() => {
+            chatIcon.classList.remove('bounce');
+        }, 1000);
+    }, 15000);
 </script>
 
+<style>
+    .floating-chat-icon {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        border-radius: 50px;
+        padding: 15px 25px;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        z-index: 1000;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .floating-chat-icon:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(79, 70, 229, 0.5);
+    }
+    
+    .chat-icon-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .floating-chat-icon i {
+        font-size: 1.8rem;
+        animation: pulse 2s infinite;
+    }
+    
+    .chat-text {
+        font-weight: 600;
+        font-size: 1.1rem;
+        white-space: nowrap;
+    }
+    
+    .chat-notification {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: var(--secondary);
+        color: white;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        animation: notificationPulse 2s infinite;
+    }
+    
+    .bounce {
+        animation: bounce 1s ease;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes notificationPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    /* Mobile responsiveness for chat icon */
+    @media (max-width: 768px) {
+        .floating-chat-icon {
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+        }
+        
+        .chat-text {
+            display: none;
+        }
+        
+        .floating-chat-icon i {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>AMICUS</h3>
+                    <p>An AI-Powered mental health companion designed to provide real-time emotional support, personalized advice, and mood tracking.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p><i class="fas fa-envelope"></i> shivamkumar06ind@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +91 9310107340</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Delhi, New Delhi. India</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2025 AMICUS. All rights reserved. | AI-Powered Companion
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+            });
+        });
+        
+        // Header scroll effect
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        });
+        
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    
+                    // Add specific animations based on element
+                    if (entry.target.classList.contains('feature')) {
+                        entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                        entry.target.style.opacity = '0';
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                        }, 300);
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        // Observe features for animation
+        document.querySelectorAll('.feature').forEach(feature => {
+            observer.observe(feature);
+        });
+        
+        // CTA button animation
+        const ctaButton = document.querySelector('.cta-button');
+        
+        ctaButton.addEventListener('mouseenter', () => {
+            ctaButton.style.animation = 'pulse 0.5s ease';
+        });
+        
+        ctaButton.addEventListener('animationend', () => {
+            ctaButton.style.animation = '';
+        });
+        
+        // Floating elements animation
+        const floatingElements = document.querySelectorAll('.floating-element');
+        
+        floatingElements.forEach((element, index) => {
+            // Randomize animation duration and delay
+            const duration = 3 + Math.random() * 2;
+            const delay = index * 0.3;
+            
+            element.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Page load animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
 </body>
 </html>
