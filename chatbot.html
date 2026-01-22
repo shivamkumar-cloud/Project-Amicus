@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Talk to AMICUS | AI Companion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -12,19 +12,28 @@
             --primary-light: #818cf8;
             --primary-dark: #3730a3;
             --secondary: #06d6a0;
+            --accent: #f59e0b;
+            --danger: #ef4444;
             --dark: #1e293b;
             --light: #f8fafc;
             --gray: #64748b;
             --gray-light: #e2e8f0;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --radius: 12px;
-            --transition: all 0.3s ease;
+            --shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 40px -5px rgba(0, 0, 0, 0.15);
+            --radius: 16px;
+            --radius-lg: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
         }
 
         body {
@@ -35,6 +44,22 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(129, 140, 248, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 214, 160, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(79, 70, 229, 0.1) 0%, transparent 50%);
+            z-index: -1;
         }
 
         .container {
@@ -46,9 +71,14 @@
 
         /* Header */
         .chat-header {
-            background-color: white;
-            box-shadow: var(--shadow);
-            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
         }
 
         .header-content {
@@ -60,99 +90,209 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary);
             text-decoration: none;
+            transition: var(--transition);
         }
 
-        .logo i {
-            color: var(--secondary);
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .back-btn {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background-color: var(--light);
-            color: var(--primary);
-            padding: 10px 20px;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 24px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             transition: var(--transition);
-            border: 2px solid var(--gray-light);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         .back-btn:hover {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateX(-5px);
+            transform: translateX(-5px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .back-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn:hover i {
+            transform: translateX(-3px);
         }
 
         /* Chat Container */
+        .chat-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
         .chat-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            max-width: 900px;
-            margin: 30px auto;
-            background-color: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
             overflow: hidden;
-            animation: fadeIn 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Chat Header Info */
         .chat-info {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 25px;
+            padding: 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-info::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
 
         .bot-avatar {
-            width: 80px;
-            height: 80px;
-            background-color: white;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, white 0%, #f1f5f9 100%);
             border-radius: 50%;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            animation: pulse 2s infinite;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            animation: pulse-avatar 3s infinite;
+            border: 4px solid white;
         }
 
         .bot-avatar i {
-            font-size: 2.5rem;
-            color: var(--primary);
-        }
-
-        .bot-name {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            font-family: 'Poppins', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .bot-status {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            opacity: 0.9;
+            gap: 10px;
+            font-size: 1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background-color: var(--secondary);
             border-radius: 50%;
-            animation: statusPulse 1.5s infinite;
+            animation: status-pulse 2s infinite;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        /* Voice Mode Toggle */
+        .voice-toggle-container {
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .voice-toggle {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+        }
+
+        .voice-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .voice-toggle.active {
+            background: rgba(6, 214, 160, 0.3);
+            border-color: var(--secondary);
+        }
+
+        .voice-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            color: var(--primary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .voice-toggle.active .voice-icon {
+            background: var(--secondary);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        .voice-text {
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
         /* Chat Messages Area */
@@ -160,14 +300,16 @@
             flex: 1;
             padding: 25px;
             overflow-y: auto;
-            max-height: 500px;
-            background-color: #f9fafb;
+            background: linear-gradient(180deg, #f9fafb 0%, #f1f5f9 100%);
+            min-height: 400px;
+            scroll-behavior: smooth;
         }
 
         .message {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
-            animation: messageSlide 0.3s ease;
+            animation: messageAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 85%;
         }
 
         .message.bot {
@@ -175,243 +317,393 @@
         }
 
         .message.user {
-            flex-direction: row-reverse;
             align-items: flex-start;
+            margin-left: auto;
+            flex-direction: row-reverse;
         }
 
         .message-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            margin: 0 10px;
+            margin: 0 12px;
+            position: relative;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .bot .message-avatar {
-            background-color: var(--primary-light);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
             color: white;
         }
 
         .user .message-avatar {
-            background-color: var(--secondary);
+            background: linear-gradient(135deg, var(--secondary) 0%, #0fa 100%);
             color: white;
         }
 
         .message-content {
-            max-width: 70%;
-            padding: 15px 20px;
-            border-radius: 18px;
+            max-width: 100%;
+            padding: 18px 22px;
+            border-radius: 22px;
             position: relative;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .message-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         .bot .message-content {
-            background-color: white;
-            border: 1px solid var(--gray-light);
-            border-top-left-radius: 5px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-top-left-radius: 8px;
+            border-bottom-right-radius: 22px;
+            border-bottom-left-radius: 22px;
         }
 
         .user .message-content {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
-            border-top-right-radius: 5px;
-        }
-
-        .message-time {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            margin-top: 5px;
+            border-top-right-radius: 8px;
+            border-bottom-left-radius: 22px;
+            border-bottom-right-radius: 22px;
             text-align: right;
         }
 
-        .typing-indicator {
+        .message-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             gap: 5px;
-            padding: 15px 20px;
-            background-color: white;
-            border-radius: 18px;
-            width: fit-content;
+        }
+
+        .user .message-time {
+            justify-content: flex-end;
+        }
+
+        /* Voice Message Indicator */
+        .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            margin-top: 10px;
             border: 1px solid var(--gray-light);
-            margin-bottom: 20px;
         }
 
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--gray);
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
+        .voice-wave {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 30px;
         }
 
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
+        .voice-bar {
+            width: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+            animation: voice-wave 1.2s ease-in-out infinite;
         }
 
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .voice-bar:nth-child(2) { animation-delay: 0.1s; }
+        .voice-bar:nth-child(3) { animation-delay: 0.2s; }
+        .voice-bar:nth-child(4) { animation-delay: 0.3s; }
+        .voice-bar:nth-child(5) { animation-delay: 0.4s; }
 
         /* Quick Actions */
         .quick-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .quick-action-btn {
-            background-color: white;
-            border: 1px solid var(--primary-light);
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary-light);
             color: var(--primary);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .quick-action-btn:hover {
-            background-color: var(--primary-light);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Chat Input */
-        .chat-input-container {
-            padding: 20px 25px;
-            background-color: white;
-            border-top: 1px solid var(--gray-light);
-        }
-
-        .input-wrapper {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid var(--gray-light);
-            border-radius: 50px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            transition: var(--transition);
-        }
-
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
         }
 
-        .send-btn:hover {
-            transform: scale(1.05) rotate(10deg);
-            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        .quick-action-btn:hover {
+            background: var(--primary-light);
+            color: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
         }
 
-        .send-btn i {
-            font-size: 1.2rem;
+        .quick-action-btn i {
+            font-size: 1.1rem;
         }
 
         /* Mood Selector */
         .mood-selector {
-            padding: 15px 25px;
-            background-color: #f0f9ff;
-            border-top: 1px solid var(--gray-light);
+            padding: 20px 25px;
+            background: rgba(240, 249, 255, 0.9);
+            border-top: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(10px);
         }
 
         .mood-title {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--gray);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .mood-title i {
+            color: var(--primary);
         }
 
         .mood-options {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             overflow-x: auto;
-            padding-bottom: 5px;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-light) transparent;
+        }
+
+        .mood-options::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .mood-options::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        .mood-options::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
         }
 
         .mood-option {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            padding: 10px 15px;
-            background-color: white;
-            border-radius: 10px;
+            gap: 8px;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
             border: 2px solid transparent;
             cursor: pointer;
             transition: var(--transition);
-            min-width: 80px;
+            min-width: 90px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         .mood-option:hover {
             border-color: var(--primary-light);
-            transform: translateY(-3px);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
         .mood-option.active {
             border-color: var(--primary);
-            background-color: rgba(79, 70, 229, 0.05);
+            background: rgba(79, 70, 229, 0.05);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.15);
         }
 
         .mood-emoji {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mood-option:hover .mood-emoji {
+            transform: scale(1.2);
         }
 
         .mood-label {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
             color: var(--dark);
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        /* Chat Input */
+        .chat-input-container {
+            padding: 25px;
+            background: white;
+            border-top: 1px solid var(--gray-light);
+            position: relative;
         }
 
-        @keyframes messageSlide {
+        .input-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 18px 24px;
+            border: 2px solid var(--gray-light);
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: var(--transition);
+            color: white;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .voice-btn {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0db 100%);
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(6, 214, 160, 0.3);
+        }
+
+        .voice-btn.listening {
+            background: linear-gradient(135deg, var(--danger) 0%, #ff6b6b 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Voice Listening Indicator */
+        .voice-listening {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .listening-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            animation: listening-pulse 2s infinite;
+        }
+
+        .listening-circle::before {
+            content: '';
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            animation: listening-ring 3s infinite;
+        }
+
+        .listening-icon {
+            font-size: 4rem;
+            color: white;
+            animation: listening-icon 1.5s infinite;
+        }
+
+        .listening-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .listening-hint {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes messageAppear {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: 0.5;
-            }
-            30% {
-                transform: translateY(-5px);
-                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -420,25 +712,83 @@
             50% { transform: scale(1.05); }
         }
 
-        @keyframes statusPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes pulse-avatar {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+            50% { 
+                transform: scale(1.03);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { 
+                opacity: 1;
+                box-shadow: 0 0 10px var(--secondary);
+            }
+            50% { 
+                opacity: 0.5;
+                box-shadow: 0 0 20px var(--secondary);
+            }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes voice-wave {
+            0%, 100% { height: 5px; }
+            50% { height: 25px; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes listening-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes listening-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+
+        @keyframes listening-icon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        /* Tablet */
+        @media (max-width: 992px) {
             .chat-container {
-                margin: 15px;
-                height: calc(100vh - 120px);
+                margin: 0 15px;
             }
             
-            .chat-messages {
-                max-height: none;
-                flex: 1;
+            .message {
+                max-width: 90%;
             }
             
-            .message-content {
-                max-width: 85%;
+            .bot-avatar {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .bot-avatar i {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .chat-header {
+                padding: 12px 0;
             }
             
             .header-content {
@@ -447,38 +797,152 @@
                 text-align: center;
             }
             
-            .mood-options {
-                justify-content: flex-start;
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .chat-wrapper {
+                padding: 15px 0;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 150px);
+                margin: 0 10px;
+            }
+            
+            .chat-messages {
+                padding: 20px;
+                min-height: 300px;
+            }
+            
+            .message {
+                max-width: 95%;
+                margin-bottom: 20px;
+            }
+            
+            .message-avatar {
+                width: 40px;
+                height: 40px;
+                margin: 0 8px;
+            }
+            
+            .message-content {
+                padding: 15px 18px;
+            }
+            
+            .chat-input {
+                padding: 15px 20px;
+            }
+            
+            .action-btn {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .mood-option {
+                min-width: 80px;
+                padding: 12px;
             }
         }
 
+        /* Small Mobile */
         @media (max-width: 480px) {
             .chat-info {
                 padding: 20px 15px;
             }
             
             .bot-avatar {
-                width: 60px;
-                height: 60px;
+                width: 70px;
+                height: 70px;
             }
             
             .bot-avatar i {
                 font-size: 2rem;
             }
             
+            .voice-toggle {
+                padding: 10px 18px;
+            }
+            
+            .voice-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .chat-input-container {
+                padding: 20px;
+            }
+            
+            .input-wrapper {
+                gap: 10px;
+            }
+        }
+
+        /* Landscape Mode */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .chat-header {
+                padding: 10px 0;
+            }
+            
+            .chat-wrapper {
+                padding: 10px 0;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 120px);
+            }
+            
+            .chat-info {
+                padding: 15px;
+            }
+            
+            .bot-avatar {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 10px;
+            }
+            
+            .bot-avatar i {
+                font-size: 1.8rem;
+            }
+            
+            .chat-messages {
+                padding: 15px;
+                min-height: 200px;
+            }
+            
+            .message {
+                margin-bottom: 15px;
+            }
+            
             .message-avatar {
                 width: 35px;
                 height: 35px;
-                margin: 0 8px;
             }
             
-            .chat-input {
-                padding: 12px 15px;
+            .mood-selector {
+                padding: 15px;
             }
             
-            .send-btn {
-                width: 50px;
-                height: 50px;
+            .mood-option {
+                min-width: 70px;
+                padding: 10px;
+            }
+        }
+
+        /* Desktop Site on Phone */
+        @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+            .chat-container {
+                max-width: 90%;
+                margin: 0 auto;
+            }
+        }
+
+        /* Ultra-wide screens */
+        @media (min-width: 1600px) {
+            .chat-container {
+                max-width: 1200px;
             }
         }
     </style>
@@ -489,59 +953,101 @@
         <div class="container">
             <div class="header-content">
                 <a href="index.html" class="logo">
-                    <i class="fas fa-robot"></i>
-                    AMICUS
+                    <div class="logo-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span>AMICUS</span>
                 </a>
-                <a href="index.html" class="back-btn">
-                    <i class="fas fa-arrow-left"></i>
-                    Back to Home
-                </a>
+                
+                <div class="header-actions">
+                    <button class="back-btn" onclick="window.location.href='index.html'">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Chat Container -->
-    <div class="container">
+    <div class="chat-wrapper">
         <div class="chat-container">
             <!-- Chat Header Info -->
             <div class="chat-info">
                 <div class="bot-avatar">
                     <i class="fas fa-robot"></i>
                 </div>
-                <h2 class="bot-name">AMICUS Companion</h2>
+                <h2 class="bot-name" style="position: relative; z-index: 1; margin-bottom: 10px;">AMICUS Companion</h2>
                 <div class="bot-status">
                     <div class="status-dot"></div>
-                    <span>Online & Listening</span>
+                    <span>Online & Ready to Listen</span>
+                </div>
+            </div>
+
+            <!-- Voice Mode Toggle -->
+            <div class="voice-toggle-container">
+                <div class="voice-toggle" id="voiceToggle">
+                    <div class="voice-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="voice-text">Voice Mode: <span id="voiceStatus">Off</span></div>
                 </div>
             </div>
 
             <!-- Chat Messages -->
             <div class="chat-messages" id="chatMessages">
-                <!-- Initial welcome message -->
+                <!-- Welcome message -->
                 <div class="message bot">
                     <div class="message-avatar">
                         <i class="fas fa-robot"></i>
                     </div>
                     <div class="message-content">
-                        <p>Hello there! 👋 I'm AMICUS, your AI companion for emotional support and mental wellbeing. I'm here to listen, understand, and help you navigate through tough times.</p>
-                        <p>How are you feeling today?</p>
-                        
-                        <div class="quick-actions">
-                            <button class="quick-action-btn" data-message="I'm feeling stressed">😰 Stressed</button>
-                            <button class="quick-action-btn" data-message="I'm feeling anxious">😟 Anxious</button>
-                            <button class="quick-action-btn" data-message="I'm feeling sad">😔 Sad</button>
-                            <button class="quick-action-btn" data-message="I'm feeling okay">😌 Okay</button>
+                        <div class="message-text">
+                            <p>Hello there! 👋 I'm AMICUS, your AI companion for emotional support and mental wellbeing.</p>
+                            <p>I'm here to listen, understand, and help you navigate through tough times. You can type or use voice mode to talk with me!</p>
+                            <p>How are you feeling today?</p>
                         </div>
                         
-                        <div class="message-time">Just now</div>
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" data-message="I'm feeling stressed">
+                                <i class="fas fa-fire"></i> Stressed
+                            </button>
+                            <button class="quick-action-btn" data-message="I'm feeling anxious">
+                                <i class="fas fa-wind"></i> Anxious
+                            </button>
+                            <button class="quick-action-btn" data-message="I'm feeling sad">
+                                <i class="fas fa-cloud-rain"></i> Sad
+                            </button>
+                            <button class="quick-action-btn" data-message="I'm feeling okay">
+                                <i class="fas fa-sun"></i> Okay
+                            </button>
+                        </div>
+                        
+                        <div class="message-time">
+                            <i class="far fa-clock"></i> Just now
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Typing indicator (hidden by default) -->
+                <!-- Typing indicator -->
                 <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
+                    <div class="message bot">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="voice-message">
+                                <div class="voice-wave">
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                </div>
+                                <span>AMICUS is thinking...</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -582,294 +1088,487 @@
             <!-- Chat Input -->
             <div class="chat-input-container">
                 <div class="input-wrapper">
-                    <input type="text" class="chat-input" id="userInput" placeholder="Type your message here...">
-                    <button class="send-btn" id="sendButton">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                    <input type="text" class="chat-input" id="userInput" placeholder="Type your message or click microphone...">
+                    
+                    <div class="input-actions">
+                        <button class="action-btn voice-btn" id="voiceButton">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="action-btn send-btn" id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Voice Listening Overlay -->
+    <div class="voice-listening" id="voiceListening" style="display: none;">
+        <div class="listening-circle">
+            <div class="listening-icon">
+                <i class="fas fa-microphone"></i>
+            </div>
+        </div>
+        <div class="listening-text">Listening...</div>
+        <div class="listening-hint">Speak now. Click anywhere or wait to stop.</div>
+    </div>
+
     <script>
-        // DOM Elements
-        const chatMessages = document.getElementById('chatMessages');
-        const userInput = document.getElementById('userInput');
-        const sendButton = document.getElementById('sendButton');
-        const typingIndicator = document.getElementById('typingIndicator');
-        const moodOptions = document.querySelectorAll('.mood-option');
-        const quickActionButtons = document.querySelectorAll('.quick-action-btn');
-        
-        // Current mood state
-        let currentMood = 'neutral';
-        
-        // Bot responses database
-        const botResponses = {
-            greetings: [
-                "Hello! How can I support you today?",
-                "Hi there! I'm here to listen. What's on your mind?",
-                "Welcome back! How are you feeling today?",
-                "Hello! I'm AMICUS, ready to help you navigate your emotions."
-            ],
-            stressed: [
-                "I hear you're feeling stressed. Let's try some deep breathing together. Inhale for 4 seconds, hold for 4, exhale for 6. Repeat this 3 times.",
-                "Stress can feel overwhelming. Would you like to talk about what's causing it? Sometimes sharing helps lighten the load.",
-                "When I'm stressed, I find it helpful to break things down into smaller, manageable steps. What's one small thing you can do right now?",
-                "Remember to be kind to yourself. Stress is a natural response, and it's okay to take a moment for yourself."
-            ],
-            anxious: [
-                "Anxiety can make everything feel bigger than it is. Try the 5-4-3-2-1 grounding technique: Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, and 1 you taste.",
-                "I'm here with you. Anxiety is tough, but it's temporary. Let's focus on your breathing for a moment.",
-                "Would it help to write down what's making you anxious? Sometimes getting it out of your head and onto paper reduces its power.",
-                "Remember that you've gotten through anxious moments before. This too shall pass."
-            ],
-            sad: [
-                "I'm sorry you're feeling sad. It's okay to feel this way. Would you like to share what's on your heart?",
-                "Sadness is a valid emotion. Sometimes the kindest thing we can do is acknowledge it without judgment.",
-                "When I feel sad, I find comfort in small comforts—a warm drink, a cozy blanket, or talking to someone who understands.",
-                "You're not alone in this. I'm here with you, and your feelings matter."
-            ],
-            default: [
-                "Thank you for sharing that with me. How does that make you feel?",
-                "I appreciate you opening up. Tell me more about that if you'd like.",
-                "I'm listening. What else is on your mind?",
-                "That sounds important. Would you like to explore that feeling further?",
-                "Thank you for trusting me with that. How can I best support you right now?"
-            ],
-            positive: [
-                "That's wonderful to hear! Celebrating the good moments is important too.",
-                "I'm so glad you're feeling positive! What's contributing to this good mood?",
-                "It's great to acknowledge when you're feeling good. Savor these moments.",
-                "Positive emotions are worth nurturing. What's bringing you joy today?"
-            ],
-            coping: [
-                "Mindful breathing can help center you. Try focusing on your breath for just one minute.",
-                "Sometimes a short walk can shift your perspective. Even 5 minutes outside can help.",
-                "Journaling can be therapeutic. Write without editing—just let your thoughts flow.",
-                "Progressive muscle relaxation can help release tension. Tense each muscle group for 5 seconds, then release."
-            ]
-        };
-        
-        // Initialize chat
-        function initChat() {
-            // Focus on input
-            userInput.focus();
-            
-            // Set initial mood
-            document.querySelector('.mood-option[data-mood="neutral"]').classList.add('active');
-        }
-        
-        // Add message to chat
-        function addMessage(text, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            
-            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            messageDiv.innerHTML = `
-                <div class="message-avatar">
-                    <i class="fas fa-${isUser ? 'user' : 'robot'}"></i>
-                </div>
-                <div class="message-content">
-                    <p>${text}</p>
-                    <div class="message-time">${time}</div>
-                </div>
-            `;
-            
-            chatMessages.appendChild(messageDiv);
-            scrollToBottom();
-            
-            // Add animation
-            messageDiv.style.animation = 'messageSlide 0.3s ease';
-        }
-        
-        // Show typing indicator
-        function showTyping() {
-            typingIndicator.style.display = 'flex';
-            scrollToBottom();
-        }
-        
-        // Hide typing indicator
-        function hideTyping() {
-            typingIndicator.style.display = 'none';
-        }
-        
-        // Scroll to bottom of chat
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        // Get bot response
-        function getBotResponse(userMessage) {
-            const message = userMessage.toLowerCase();
-            
-            // Check for keywords
-            if (message.includes('stress') || message.includes('overwhelm') || message.includes('pressure')) {
-                return getRandomResponse('stressed');
-            } else if (message.includes('anxious') || message.includes('anxiety') || message.includes('worr') || message.includes('panic')) {
-                return getRandomResponse('anxious');
-            } else if (message.includes('sad') || message.includes('depress') || message.includes('down') || message.includes('hopeless')) {
-                return getRandomResponse('sad');
-            } else if (message.includes('happy') || message.includes('good') || message.includes('great') || message.includes('excited') || message.includes('joy')) {
-                return getRandomResponse('positive');
-            } else if (message.includes('help') || message.includes('cope') || message.includes('deal') || message.includes('manage')) {
-                return getRandomResponse('coping');
-            } else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-                return getRandomResponse('greetings');
-            } else {
-                return getRandomResponse('default');
+        // Enhanced AMICUS Chatbot with Voice Support
+        class AmicusChatbot {
+            constructor() {
+                this.messages = [];
+                this.currentMood = 'neutral';
+                this.isVoiceMode = false;
+                this.isListening = false;
+                this.recognition = null;
+                this.synth = window.speechSynthesis;
+                
+                // DOM Elements
+                this.chatMessages = document.getElementById('chatMessages');
+                this.userInput = document.getElementById('userInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.voiceButton = document.getElementById('voiceButton');
+                this.voiceToggle = document.getElementById('voiceToggle');
+                this.voiceStatus = document.getElementById('voiceStatus');
+                this.voiceListening = document.getElementById('voiceListening');
+                this.typingIndicator = document.getElementById('typingIndicator');
+                
+                // Bot responses database
+                this.responses = {
+                    greetings: [
+                        "Hello! I'm here for you. How can I help today?",
+                        "Hi there! I'm listening. What would you like to share?",
+                        "Welcome! I'm AMICUS, ready to support you. How are you feeling?",
+                        "Hello! It's good to connect with you. What's on your mind?"
+                    ],
+                    stressed: [
+                        "I sense you're feeling stressed. Let's try some box breathing: Inhale 4 seconds, hold 4, exhale 4, hold 4. Repeat 3 times. 🌬️",
+                        "Stress can feel heavy. Would breaking things into smaller steps help? What's one tiny thing you could do right now?",
+                        "Remember, it's okay to pause. Stress is a signal, not a verdict. What self-care could you gift yourself today?",
+                        "Let's ground ourselves. Name 3 things you can see, 2 you can touch, and 1 you can hear. Ready? 👀"
+                    ],
+                    anxious: [
+                        "Anxiety can make mountains out of molehills. Let's focus on what's actually happening right now, not what might happen. 🌄",
+                        "Try the 5-4-3-2-1 technique: 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste. Ground yourself in the present. 🌍",
+                        "Your feelings are valid, but remember: anxiety is often about future possibilities. What's actually true in this moment?",
+                        "Would describing your surroundings in detail help? Sometimes anchoring in the present reduces anxiety's power. 📝"
+                    ],
+                    sad: [
+                        "I'm here with you in this sadness. It's okay to feel this way. Would you like to share what's weighing on your heart? 💔",
+                        "Sadness needs space to breathe. What gentle kindness could you offer yourself right now? A warm drink? A soft blanket?",
+                        "Remember, emotions are like weather—they come and go. This sadness won't last forever. What small comfort might help now?",
+                        "Sometimes tears are the heart's way of washing itself clean. Be gentle with yourself. You're not alone. 🤍"
+                    ],
+                    positive: [
+                        "That's wonderful to hear! Celebrating good moments creates more of them. What's bringing you joy today? 🎉",
+                        "I'm so glad you're feeling positive! Savoring these moments builds resilience for tougher times. 🌟",
+                        "Positive emotions deserve attention too! What's making you feel this way? Share if you'd like!",
+                        "It's beautiful to acknowledge when you feel good. These moments are precious. 🌈"
+                    ],
+                    coping: [
+                        "When overwhelmed, try the 'STOP' technique: Stop, Take a breath, Observe, Proceed mindfully. 🛑",
+                        "Progressive muscle relaxation can help: Tense each muscle group for 5 seconds, then release completely. Start with your toes and work up. 💆",
+                        "Journaling can organize thoughts. Try writing for 5 minutes without stopping—no editing, just flow. ✍️",
+                        "A brief walk can shift perspective. Even 5 minutes outside can change your brain chemistry. 🚶"
+                    ],
+                    default: [
+                        "Thank you for sharing that with me. How does that make you feel?",
+                        "I'm listening carefully. Tell me more if you'd like.",
+                        "That sounds important. What else comes up when you think about this?",
+                        "Thank you for trusting me. How can I best support you right now?",
+                        "I appreciate you opening up. What's the next thought that comes to mind?"
+                    ]
+                };
+                
+                this.init();
             }
-        }
-        
-        // Get random response from category
-        function getRandomResponse(category) {
-            const responses = botResponses[category];
-            return responses[Math.floor(Math.random() * responses.length)];
-        }
-        
-        // Process user message
-        function processUserMessage() {
-            const message = userInput.value.trim();
             
-            if (message === '') return;
-            
-            // Add user message
-            addMessage(message, true);
-            userInput.value = '';
-            
-            // Show typing indicator
-            showTyping();
-            
-            // Simulate bot thinking
-            setTimeout(() => {
-                hideTyping();
+            init() {
+                this.setupEventListeners();
+                this.initSpeechRecognition();
+                this.initVoiceToggle();
+                this.setupMoodSelector();
+                this.setupQuickActions();
+                this.animateElements();
                 
-                // Get and add bot response
-                const response = getBotResponse(message);
-                addMessage(response);
-                
-                // Add quick actions based on response type
-                addQuickActions(response);
-            }, 1500 + Math.random() * 1000);
-        }
-        
-        // Add quick action buttons
-        function addQuickActions(response) {
-            // Remove existing quick actions (except in bot messages)
-            document.querySelectorAll('.quick-actions').forEach(el => {
-                if (!el.closest('.message').classList.contains('bot')) {
-                    el.remove();
-                }
-            });
+                // Focus input on load
+                setTimeout(() => this.userInput.focus(), 500);
+            }
             
-            // Add new quick actions to bot message
-            const lastBotMessage = document.querySelector('.message.bot:last-child .message-content p:last-child');
-            
-            if (lastBotMessage) {
-                const quickActions = document.createElement('div');
-                quickActions.className = 'quick-actions';
+            setupEventListeners() {
+                // Send message on button click
+                this.sendButton.addEventListener('click', () => this.sendMessage());
                 
-                // Add relevant quick actions based on conversation
-                if (response.includes('breathing') || response.includes('stress')) {
-                    quickActions.innerHTML = `
-                        <button class="quick-action-btn" data-message="Can we try another breathing exercise?">🫁 Breathing Exercise</button>
-                        <button class="quick-action-btn" data-message="What else helps with stress?">😰 More Stress Tips</button>
-                        <button class="quick-action-btn" data-message="I'm feeling a bit better">😌 Feeling Better</button>
-                    `;
-                } else if (response.includes('anxious') || response.includes('grounding')) {
-                    quickActions.innerHTML = `
-                        <button class="quick-action-btn" data-message="Can you explain the grounding technique again?">🌍 Grounding Technique</button>
-                        <button class="quick-action-btn" data-message="What if the anxiety doesn't go away?">😟 Persistent Anxiety</button>
-                        <button class="quick-action-btn" data-message="I tried it and it helped">👍 It Helped</button>
-                    `;
+                // Send message on Enter key
+                this.userInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+                
+                // Voice button
+                this.voiceButton.addEventListener('click', () => this.toggleVoiceListening());
+                
+                // Click anywhere to stop voice listening
+                this.voiceListening.addEventListener('click', () => this.stopVoiceListening());
+                
+                // Auto-resize input
+                this.userInput.addEventListener('input', this.autoResizeInput.bind(this));
+            }
+            
+            initSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.processVoiceInput(transcript);
+                    };
+                    
+                    this.recognition.onend = () => {
+                        if (this.isListening) {
+                            this.stopVoiceListening();
+                        }
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.stopVoiceListening();
+                        this.addBotMessage("I had trouble hearing you. Could you type instead or try speaking again?");
+                    };
                 } else {
-                    quickActions.innerHTML = `
-                        <button class="quick-action-btn" data-message="I need coping strategies">🛡️ Coping Strategies</button>
-                        <button class="quick-action-btn" data-message="Can we talk about something positive?">😊 Positive Talk</button>
-                        <button class="quick-action-btn" data-message="I'm not sure what to say">🤔 Not Sure</button>
-                    `;
+                    console.warn('Speech recognition not supported');
+                    this.voiceButton.style.display = 'none';
+                }
+            }
+            
+            initVoiceToggle() {
+                this.voiceToggle.addEventListener('click', () => {
+                    this.isVoiceMode = !this.isVoiceMode;
+                    
+                    if (this.isVoiceMode) {
+                        this.voiceToggle.classList.add('active');
+                        this.voiceStatus.textContent = 'On';
+                        this.voiceStatus.style.color = 'var(--secondary)';
+                        this.addBotMessage("Voice mode activated! You can now speak to me. Click the microphone button or say 'Hey AMICUS' to start.");
+                    } else {
+                        this.voiceToggle.classList.remove('active');
+                        this.voiceStatus.textContent = 'Off';
+                        this.voiceStatus.style.color = '';
+                        this.addBotMessage("Voice mode deactivated. You can continue typing.");
+                    }
+                });
+            }
+            
+            setupMoodSelector() {
+                document.querySelectorAll('.mood-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        // Remove active class from all
+                        document.querySelectorAll('.mood-option').forEach(opt => {
+                            opt.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked
+                        option.classList.add('active');
+                        
+                        // Update current mood
+                        this.currentMood = option.dataset.mood;
+                        
+                        // Mood messages
+                        const moodMessages = {
+                            happy: "I'm feeling really good today! 😊",
+                            calm: "I'm feeling calm and centered. 🧘",
+                            neutral: "I'm feeling okay, nothing special. 😐",
+                            stressed: "I'm feeling stressed and overwhelmed. 😰",
+                            sad: "I'm feeling sad and down. 😔",
+                            anxious: "I'm feeling anxious and worried. 😟"
+                        };
+                        
+                        if (moodMessages[this.currentMood]) {
+                            this.userInput.value = moodMessages[this.currentMood];
+                            this.sendMessage();
+                        }
+                    });
+                });
+            }
+            
+            setupQuickActions() {
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.quick-action-btn')) {
+                        const btn = e.target.closest('.quick-action-btn');
+                        const message = btn.dataset.message;
+                        this.userInput.value = message;
+                        this.sendMessage();
+                    }
+                });
+            }
+            
+            autoResizeInput() {
+                this.userInput.style.height = 'auto';
+                this.userInput.style.height = Math.min(this.userInput.scrollHeight, 100) + 'px';
+            }
+            
+            sendMessage() {
+                const message = this.userInput.value.trim();
+                if (!message) return;
+                
+                // Add user message
+                this.addMessage(message, true);
+                this.userInput.value = '';
+                this.autoResizeInput();
+                
+                // Show typing indicator
+                this.showTypingIndicator();
+                
+                // Process after delay
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    const response = this.getBotResponse(message);
+                    this.addBotMessage(response);
+                    
+                    // Speak response if voice mode is on
+                    if (this.isVoiceMode && this.synth) {
+                        this.speakResponse(response);
+                    }
+                }, 1000 + Math.random() * 1000);
+            }
+            
+            addMessage(text, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+                
+                const time = new Date().toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas fa-${isUser ? 'user' : 'robot'}"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">${this.formatMessage(text)}</div>
+                        <div class="message-time">
+                            <i class="far fa-clock"></i> ${time}
+                        </div>
+                    </div>
+                `;
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.scrollToBottom();
+                
+                // Add to messages array
+                this.messages.push({
+                    text,
+                    isUser,
+                    time: new Date(),
+                    mood: this.currentMood
+                });
+            }
+            
+            addBotMessage(text) {
+                this.addMessage(text, false);
+            }
+            
+            formatMessage(text) {
+                // Replace line breaks with paragraphs
+                return text.replace(/\n/g, '<br>');
+            }
+            
+            showTypingIndicator() {
+                this.typingIndicator.style.display = 'block';
+                this.scrollToBottom();
+            }
+            
+            hideTypingIndicator() {
+                this.typingIndicator.style.display = 'none';
+            }
+            
+            scrollToBottom() {
+                setTimeout(() => {
+                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                }, 100);
+            }
+            
+            getBotResponse(userMessage) {
+                const message = userMessage.toLowerCase();
+                
+                // Check for keywords
+                if (message.includes('stress') || message.includes('overwhelm') || message.includes('pressure')) {
+                    return this.getRandomResponse('stressed');
+                } else if (message.includes('anxious') || message.includes('anxiety') || message.includes('worr') || message.includes('panic')) {
+                    return this.getRandomResponse('anxious');
+                } else if (message.includes('sad') || message.includes('depress') || message.includes('down') || message.includes('hopeless')) {
+                    return this.getRandomResponse('sad');
+                } else if (message.includes('happy') || message.includes('good') || message.includes('great') || message.includes('joy') || message.includes('excited')) {
+                    return this.getRandomResponse('positive');
+                } else if (message.includes('help') || message.includes('cope') || message.includes('deal') || message.includes('manage')) {
+                    return this.getRandomResponse('coping');
+                } else if (message.includes('hello') || message.includes('hi') || message.includes('hey') || message.includes('start')) {
+                    return this.getRandomResponse('greetings');
+                } else {
+                    return this.getRandomResponse('default');
+                }
+            }
+            
+            getRandomResponse(category) {
+                const responses = this.responses[category];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            toggleVoiceListening() {
+                if (!this.recognition) {
+                    this.addBotMessage("Voice recognition is not supported in your browser. Please type your message.");
+                    return;
                 }
                 
-                lastBotMessage.after(quickActions);
+                if (!this.isListening) {
+                    this.startVoiceListening();
+                } else {
+                    this.stopVoiceListening();
+                }
+            }
+            
+            startVoiceListening() {
+                if (!this.isVoiceMode) {
+                    this.addBotMessage("Please enable voice mode first by clicking the 'Voice Mode' toggle above.");
+                    return;
+                }
                 
-                // Add event listeners to new buttons
-                document.querySelectorAll('.quick-action-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const message = this.getAttribute('data-message');
-                        userInput.value = message;
-                        processUserMessage();
+                try {
+                    this.recognition.start();
+                    this.isListening = true;
+                    this.voiceListening.style.display = 'flex';
+                    this.voiceButton.classList.add('listening');
+                    document.body.style.overflow = 'hidden';
+                } catch (error) {
+                    console.error('Speech recognition start error:', error);
+                }
+            }
+            
+            stopVoiceListening() {
+                if (this.recognition && this.isListening) {
+                    this.recognition.stop();
+                }
+                
+                this.isListening = false;
+                this.voiceListening.style.display = 'none';
+                this.voiceButton.classList.remove('listening');
+                document.body.style.overflow = '';
+            }
+            
+            processVoiceInput(transcript) {
+                this.addMessage(transcript, true);
+                
+                // Show typing indicator
+                this.showTypingIndicator();
+                
+                // Process after delay
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    const response = this.getBotResponse(transcript);
+                    this.addBotMessage(response);
+                    
+                    // Speak the response
+                    this.speakResponse(response);
+                }, 800);
+            }
+            
+            speakResponse(text) {
+                if (!this.synth) return;
+                
+                // Cancel any ongoing speech
+                this.synth.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Configure voice
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                
+                // Select a voice
+                const voices = this.synth.getVoices();
+                const preferredVoice = voices.find(voice => 
+                    voice.name.includes('Google') || 
+                    voice.name.includes('Samantha') ||
+                    voice.name.includes('Microsoft')
+                );
+                
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                }
+                
+                // Speak
+                this.synth.speak(utterance);
+            }
+            
+            animateElements() {
+                // Animate mood options on hover
+                document.querySelectorAll('.mood-option').forEach(option => {
+                    option.addEventListener('mouseenter', () => {
+                        option.style.transform = 'translateY(-8px) scale(1.08)';
                     });
+                    
+                    option.addEventListener('mouseleave', () => {
+                        if (!option.classList.contains('active')) {
+                            option.style.transform = '';
+                        } else {
+                            option.style.transform = 'translateY(-3px)';
+                        }
+                    });
+                });
+                
+                // Add subtle animation to messages on hover
+                document.addEventListener('mouseover', (e) => {
+                    const message = e.target.closest('.message-content');
+                    if (message) {
+                        message.style.transform = 'translateY(-3px)';
+                    }
+                });
+                
+                document.addEventListener('mouseout', (e) => {
+                    const message = e.target.closest('.message-content');
+                    if (message) {
+                        message.style.transform = '';
+                    }
                 });
             }
         }
         
-        // Event Listeners
-        sendButton.addEventListener('click', processUserMessage);
-        
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                processUserMessage();
-            }
-        });
-        
-        // Mood selector
-        moodOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                // Remove active class from all
-                moodOptions.forEach(opt => opt.classList.remove('active'));
-                
-                // Add active class to clicked
-                this.classList.add('active');
-                
-                // Update current mood
-                currentMood = this.getAttribute('data-mood');
-                
-                // Send mood message
-                const moodMessages = {
-                    happy: "I'm feeling pretty good today! 😊",
-                    calm: "I'm feeling calm and centered. 🧘",
-                    neutral: "I'm feeling okay, nothing special. 😐",
-                    stressed: "I'm feeling stressed and overwhelmed. 😰",
-                    sad: "I'm feeling sad and down. 😔",
-                    anxious: "I'm feeling anxious and worried. 😟"
-                };
-                
-                if (moodMessages[currentMood]) {
-                    userInput.value = moodMessages[currentMood];
-                    processUserMessage();
-                }
-            });
-        });
-        
-        // Quick action buttons
-        quickActionButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const message = this.getAttribute('data-message');
-                userInput.value = message;
-                processUserMessage();
-            });
-        });
-        
-        // Initialize chat
-        document.addEventListener('DOMContentLoaded', initChat);
-        
-        // Add some interactive effects
-        document.querySelectorAll('.mood-option').forEach(option => {
-            option.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px)';
-            });
+        // Initialize chatbot when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.amicusChatbot = new AmicusChatbot();
             
-            option.addEventListener('mouseleave', function() {
-                if (!this.classList.contains('active')) {
-                    this.style.transform = 'translateY(0)';
+            // Add welcome animation
+            setTimeout(() => {
+                document.querySelector('.bot-avatar').style.animation = 'pulse-avatar 2s ease';
+            }, 1000);
+            
+            // Handle page visibility for speech synthesis
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
                 }
             });
         });
         
-        // Add a welcome effect
-        setTimeout(() => {
-            document.querySelector('.bot-avatar').style.animation = 'pulse 1s ease';
-        }, 1000);
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                window.amicusChatbot?.scrollToBottom();
+            }, 300);
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            window.amicusChatbot?.scrollToBottom();
+        });
     </script>
 </body>
 </html>
