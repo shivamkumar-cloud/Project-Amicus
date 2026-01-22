@@ -3,613 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMICUS | AI-Powered Companion</title>
+    <title>AMICUS | AI-Powered Mental Health Companion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="html" href="chatbot.html">
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-light: #818cf8;
-            --primary-dark: #3730a3;
-            --secondary: #06d6a0;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --gray-light: #e2e8f0;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --radius: 12px;
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            background-color: var(--light);
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header & Navigation */
-        header {
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: var(--shadow);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            transition: var(--transition);
-        }
-
-        .header-scrolled {
-            padding: 10px 0;
-            background-color: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            transition: var(--transition);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .logo i {
-            color: var(--secondary);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 500;
-            font-size: 1.05rem;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--primary);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--primary);
-            cursor: pointer;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 180px 0 100px;
-            background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
-            opacity: 0.15;
-            border-radius: 50%;
-        }
-
-        .hero-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-        }
-
-        .hero-text {
-            flex: 1;
-            animation: fadeInUp 1s ease;
-        }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-
-        .hero-text .tagline {
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-
-        .hero-text p {
-            font-size: 1.2rem;
-            color: var(--gray);
-            margin-bottom: 30px;
-            max-width: 600px;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background-color: var(--primary);
-            color: white;
-            padding: 15px 35px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
-            border: 2px solid var(--primary);
-        }
-
-        .cta-button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.4);
-        }
-
-        .hero-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 1.5s ease;
-        }
-
-        .hero-image-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .ai-bot {
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            transition: transform 0.5s ease;
-        }
-
-        .ai-bot:hover {
-            transform: scale(1.03);
-        }
-
-        .floating-elements {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .floating-element {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: var(--shadow);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .floating-element:nth-child(1) {
-            width: 60px;
-            height: 60px;
-            top: -20px;
-            left: -20px;
-            animation-delay: 0s;
-            background-color: var(--primary-light);
-            color: white;
-        }
-
-        .floating-element:nth-child(2) {
-            width: 50px;
-            height: 50px;
-            bottom: 30px;
-            right: -10px;
-            animation-delay: 0.5s;
-            background-color: var(--secondary);
-            color: white;
-        }
-
-        .floating-element:nth-child(3) {
-            width: 40px;
-            height: 40px;
-            top: 50%;
-            right: -15px;
-            animation-delay: 1s;
-            background-color: white;
-            color: var(--primary);
-        }
-
-        /* About Section */
-        .about {
-            padding: 100px 0;
-            background-color: white;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--gray);
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 50px;
-        }
-
-        .about-content {
-            display: flex;
-            align-items: center;
-            gap: 60px;
-        }
-
-        .about-text {
-            flex: 1;
-        }
-
-        .about-text p {
-            margin-bottom: 25px;
-            font-size: 1.1rem;
-            color: var(--gray);
-        }
-
-        .features {
-            flex: 1;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-        }
-
-        .feature {
-            background-color: var(--light);
-            padding: 25px;
-            border-radius: var(--radius);
-            transition: var(--transition);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .feature:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .feature h3 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-
-        .feature p {
-            font-size: 0.95rem;
-            color: var(--gray);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--dark);
-            color: white;
-            padding: 70px 0 30px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 40px;
-            margin-bottom: 50px;
-        }
-
-        .footer-section {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .footer-section h3 {
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            color: white;
-        }
-
-        .footer-section p {
-            margin-bottom: 20px;
-            color: #cbd5e1;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            color: #cbd5e1;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-links a:hover {
-            color: var(--primary-light);
-            padding-left: 5px;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-icons a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: white;
-            transition: var(--transition);
-        }
-
-        .social-icons a:hover {
-            background-color: var(--primary);
-            transform: translateY(-5px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* Responsive Design */
-        /* Tablets */
-        @media (max-width: 992px) {
-            .hero-text h1 {
-                font-size: 2.8rem;
-            }
-            
-            .hero-text .tagline {
-                font-size: 1.5rem;
-            }
-            
-            .hero-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .about-content {
-                flex-direction: column;
-            }
-            
-            .features {
-                width: 100%;
-            }
-        }
-
-        /* Large Phones */
-        @media (max-width: 768px) {
-            .nav-links {
-                position: fixed;
-                top: 80px;
-                left: 0;
-                width: 100%;
-                background-color: white;
-                flex-direction: column;
-                align-items: center;
-                padding: 20px 0;
-                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-                transform: translateY(-100%);
-                opacity: 0;
-                transition: transform 0.3s ease, opacity 0.3s ease;
-                z-index: 999;
-            }
-            
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .hero {
-                padding: 150px 0 80px;
-            }
-            
-            .hero-text h1 {
-                font-size: 2.3rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-            }
-        }
-
-        /* Small Phones */
-        @media (max-width: 480px) {
-            .hero-text h1 {
-                font-size: 2rem;
-            }
-            
-            .hero-text .tagline {
-                font-size: 1.3rem;
-            }
-            
-            .hero-text p {
-                font-size: 1rem;
-            }
-            
-            .cta-button {
-                padding: 12px 25px;
-                font-size: 1rem;
-            }
-            
-            .feature {
-                padding: 20px;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animation.css">
 </head>
 <body>
-    <!-- Header & Navigation -->
-    <header id="header">
-        <div class="container">
-            <nav class="nav-container">
-                <a href="#" class="logo">
-                    <i class="fas fa-robot"></i>
-                    AMICUS
-                </a>
-                
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-                
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </nav>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-robot"></i>
+                <span>AMICUS</span>
+            </a>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="#home" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+                <a href="#features" class="nav-link"><i class="fas fa-star"></i> Features</a>
+                <a href="#therapy" class="nav-link"><i class="fas fa-heart"></i> Therapy</a>
+                <a href="#meditation" class="nav-link"><i class="fas fa-spa"></i> Meditation</a>
+                <a href="#mood" class="nav-link"><i class="fas fa-chart-line"></i> Mood Track</a>
+                <a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            </div>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-    </header>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
-                <div class="hero-text">
-                    <h1>AMICUS</h1>
-                    <div class="tagline">Your Silent Ally in Tough Times</div>
-                    <p>AMICUS is an AI-Powered mental health companion designed to provide real-time emotional support, personalized advice, and mood tracking. Available 24/7, it combines AI-driven insights with human-like empathy to help you manage stress, anxiety, and emotional challenges.</p>
-                    <a href="#about" class="cta-button">Start Your Journey</a>
+                <div class="hero-text animate__animated animate__fadeInLeft">
+                    <h1 class="hero-title">Your AI Companion for Mental Wellness</h1>
+                    <p class="hero-subtitle">AMICUS understands, supports, and guides you through emotional challenges with empathy and intelligence.</p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Available</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Private</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">AI</span>
+                            <span class="stat-label">Powered</span>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#therapy" class="btn btn-primary">
+                            <i class="fas fa-play-circle"></i> Start Your Journey
+                        </a>
+                        <a href="#features" class="btn btn-secondary">
+                            <i class="fas fa-info-circle"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image animate__animated animate__fadeInRight">
+                    <div class="ai-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="floating-elements">
+                        <div class="floating-element"><i class="fas fa-heart"></i></div>
+                        <div class="floating-element"><i class="fas fa-brain"></i></div>
+                        <div class="floating-element"><i class="fas fa-headphones"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">How AMICUS Helps You Heal</h2>
+            <p class="section-subtitle">Our AI companion offers multiple therapeutic approaches</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>AI Therapy Sessions</h3>
+                    <p>Engage in meaningful conversations with our AI therapist that understands emotions and provides evidence-based support.</p>
+                    <a href="#therapy" class="feature-link">Start Session <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
-                <div class="hero-image">
-                    <div class="hero-image-container">
-                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Companion" class="ai-bot">
-                        
-                        <div class="floating-elements">
-                            <div class="floating-element">
-                                <i class="fas fa-heart"></i>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <h3>Guided Breathing</h3>
+                    <p>Interactive breathing exercises with visual guides to reduce anxiety and promote relaxation in real-time.</p>
+                    <a href="#breathing" class="feature-link">Breathe Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Mindful Meditation</h3>
+                    <p>Personalized meditation sessions based on your current emotional state and preferences.</p>
+                    <a href="#meditation" class="feature-link">Meditate <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Mood Tracking</h3>
+                    <p>Track your emotional journey with intelligent analytics and personalized insights.</p>
+                    <a href="#mood" class="feature-link">Track Mood <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Therapy Section -->
+    <section class="therapy" id="therapy">
+        <div class="container">
+            <h2 class="section-title">Interactive Therapy Tools</h2>
+            <p class="section-subtitle">Engage with therapeutic activities designed by mental health experts</p>
+            
+            <div class="therapy-grid">
+                <div class="therapy-card journal-card">
+                    <div class="therapy-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Emotional Journal</h3>
+                    <p>Write about your feelings with AI-powered prompts and emotional analysis.</p>
+                    <div class="journal-preview">
+                        <div class="journal-line"></div>
+                        <div class="journal-line"></div>
+                        <div class="journal-line"></div>
+                    </div>
+                    <button class="btn btn-therapy" id="openJournal">
+                        <i class="fas fa-pen"></i> Start Journaling
+                    </button>
+                </div>
+                
+                <div class="therapy-card cbt-card">
+                    <div class="therapy-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>CBT Exercises</h3>
+                    <p>Interactive Cognitive Behavioral Therapy exercises to reframe negative thoughts.</p>
+                    <div class="cbt-exercises">
+                        <span class="cbt-tag">Thought Records</span>
+                        <span class="cbt-tag">Behavior Activation</span>
+                        <span class="cbt-tag">Cognitive Restructuring</span>
+                    </div>
+                    <button class="btn btn-therapy" id="startCBT">
+                        <i class="fas fa-tasks"></i> Try CBT
+                    </button>
+                </div>
+                
+                <div class="therapy-card gratitude-card">
+                    <div class="therapy-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Gratitude Practice</h3>
+                    <p>Daily gratitude exercises to cultivate positivity and mindfulness.</p>
+                    <div class="gratitude-wheel">
+                        <div class="wheel-item">Family</div>
+                        <div class="wheel-item">Health</div>
+                        <div class="wheel-item">Nature</div>
+                        <div class="wheel-item">Learning</div>
+                    </div>
+                    <button class="btn btn-therapy" id="startGratitude">
+                        <i class="fas fa-heart"></i> Practice Gratitude
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breathing Exercise Section -->
+    <section class="breathing" id="breathing">
+        <div class="container">
+            <h2 class="section-title">Calm Your Mind with Breathing</h2>
+            <p class="section-subtitle">Follow the visual guide for relaxation</p>
+            
+            <div class="breathing-container">
+                <div class="breathing-visualizer" id="breathingVisualizer">
+                    <div class="breathing-circle" id="breathingCircle">
+                        <div class="breathing-text" id="breathingText">Breathe In</div>
+                    </div>
+                    <div class="breathing-instructions">
+                        <h4>4-7-8 Breathing Technique</h4>
+                        <p>Inhale for 4 seconds, hold for 7 seconds, exhale for 8 seconds</p>
+                    </div>
+                </div>
+                
+                <div class="breathing-controls">
+                    <div class="breathing-presets">
+                        <button class="breathing-preset active" data-time="478">
+                            4-7-8 Technique
+                        </button>
+                        <button class="breathing-preset" data-time="456">
+                            4-5-6 Technique
+                        </button>
+                        <button class="breathing-preset" data-time="box">
+                            Box Breathing
+                        </button>
+                    </div>
+                    
+                    <div class="breathing-timer">
+                        <div class="timer-display" id="timerDisplay">00:00</div>
+                        <div class="timer-controls">
+                            <button class="timer-btn" id="startBreathing">
+                                <i class="fas fa-play"></i> Start
+                            </button>
+                            <button class="timer-btn" id="pauseBreathing">
+                                <i class="fas fa-pause"></i> Pause
+                            </button>
+                            <button class="timer-btn" id="resetBreathing">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="breathing-stats">
+                        <div class="breathing-stat">
+                            <span class="stat-value" id="breathCount">0</span>
+                            <span class="stat-label">Breaths</span>
+                        </div>
+                        <div class="breathing-stat">
+                            <span class="stat-value" id="sessionTime">0</span>
+                            <span class="stat-label">Minutes</span>
+                        </div>
+                        <div class="breathing-stat">
+                            <span class="stat-value" id="calmScore">0</span>
+                            <span class="stat-label">Calm Score</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meditation Section -->
+    <section class="meditation" id="meditation">
+        <div class="container">
+            <h2 class="section-title">Guided Meditation Library</h2>
+            <p class="section-subtitle">Select a meditation based on your needs</p>
+            
+            <div class="meditation-grid">
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <i class="fas fa-moon"></i>
+                        <span class="duration">10 min</span>
+                    </div>
+                    <h3>Sleep Meditation</h3>
+                    <p>Gentle guidance to help you fall asleep peacefully</p>
+                    <div class="meditation-player">
+                        <button class="play-btn" data-audio="sleep">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <i class="fas fa-sun"></i>
+                        <span class="duration">15 min</span>
+                    </div>
+                    <h3>Morning Calm</h3>
+                    <p>Start your day with peace and intention</p>
+                    <div class="meditation-player">
+                        <button class="play-btn" data-audio="morning">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <i class="fas fa-tint"></i>
+                        <span class="duration">5 min</span>
+                    </div>
+                    <h3>Anxiety Relief</h3>
+                    <p>Quick meditation for immediate calm</p>
+                    <div class="meditation-player">
+                        <button class="play-btn" data-audio="anxiety">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <i class="fas fa-mountain"></i>
+                        <span class="duration">20 min</span>
+                    </div>
+                    <h3>Nature Soundscape</h3>
+                    <p>Immersive sounds of nature for deep relaxation</p>
+                    <div class="meditation-player">
+                        <button class="play-btn" data-audio="nature">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mood Tracking Section -->
+    <section class="mood-tracker" id="mood">
+        <div class="container">
+            <h2 class="section-title">Track Your Emotional Journey</h2>
+            <p class="section-subtitle">Monitor patterns and gain insights</p>
+            
+            <div class="mood-container">
+                <div class="mood-input">
+                    <h3>How are you feeling right now?</h3>
+                    <div class="mood-options">
+                        <div class="mood-option" data-mood="ecstatic">
+                            <i class="fas fa-laugh-beam"></i>
+                            <span>Ecstatic</span>
+                        </div>
+                        <div class="mood-option" data-mood="happy">
+                            <i class="fas fa-smile"></i>
+                            <span>Happy</span>
+                        </div>
+                        <div class="mood-option" data-mood="neutral">
+                            <i class="fas fa-meh"></i>
+                            <span>Neutral</span>
+                        </div>
+                        <div class="mood-option" data-mood="sad">
+                            <i class="fas fa-frown"></i>
+                            <span>Sad</span>
+                        </div>
+                        <div class="mood-option" data-mood="anxious">
+                            <i class="fas fa-flushed"></i>
+                            <span>Anxious</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mood-journal">
+                        <textarea placeholder="Optional: Add a note about why you feel this way..." id="moodNote"></textarea>
+                        <button class="btn btn-primary" id="saveMood">
+                            <i class="fas fa-save"></i> Save Mood
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mood-chart">
+                    <div class="chart-container">
+                        <canvas id="moodChart"></canvas>
+                    </div>
+                    <div class="mood-insights">
+                        <h4>Weekly Insights</h4>
+                        <div class="insight">
+                            <i class="fas fa-chart-line"></i>
+                            <p>Your mood tends to improve on weekends</p>
+                        </div>
+                        <div class="insight">
+                            <i class="fas fa-sun"></i>
+                            <p>Morning meditations correlate with better days</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section class="resources" id="resources">
+        <div class="container">
+            <h2 class="section-title">Mental Health Resources</h2>
+            <p class="section-subtitle">Learn, grow, and understand mental wellness</p>
+            
+            <div class="resources-tabs">
+                <div class="tab-headers">
+                    <button class="tab-header active" data-tab="articles">Articles</button>
+                    <button class="tab-header" data-tab="videos">Videos</button>
+                    <button class="tab-header" data-tab="tools">Tools</button>
+                    <button class="tab-header" data-tab="community">Community</button>
+                </div>
+                
+                <div class="tab-content active" id="articles">
+                    <div class="article-grid">
+                        <div class="article-card">
+                            <h3><i class="fas fa-file-alt"></i> Understanding Anxiety</h3>
+                            <p>Learn about anxiety symptoms and coping strategies</p>
+                            <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="article-card">
+                            <h3><i class="fas fa-file-alt"></i> Mindfulness Basics</h3>
+                            <p>A beginner's guide to mindfulness meditation</p>
+                            <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="article-card">
+                            <h3><i class="fas fa-file-alt"></i> Sleep Hygiene</h3>
+                            <p>Improve your sleep with these science-backed tips</p>
+                            <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="videos">
+                    <div class="video-grid">
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <i class="fas fa-play-circle"></i>
                             </div>
-                            <div class="floating-element">
-                                <i class="fas fa-brain"></i>
+                            <h3>5-Minute Stress Relief</h3>
+                            <p>Quick techniques for immediate calm</p>
+                        </div>
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <i class="fas fa-play-circle"></i>
                             </div>
-                            <div class="floating-element">
-                                <i class="fas fa-headphones"></i>
-                            </div>
+                            <h3>Yoga for Anxiety</h3>
+                            <p>Gentle poses to release tension</p>
                         </div>
                     </div>
                 </div>
@@ -620,344 +444,136 @@
     <!-- About Section -->
     <section class="about" id="about">
         <div class="container">
-            <h2 class="section-title">AMICUS | AI That Cares, Anytime, Anywhere</h2>
-            <p class="section-subtitle">Your trusted friend who's always there for you. AMICUS listens when you need to talk, helps you manage stress, and gives you advice that actually makes sense.</p>
+            <h2 class="section-title">About AMICUS</h2>
+            <p class="section-subtitle">Technology with empathy at its core</p>
             
             <div class="about-content">
                 <div class="about-text">
-                    <p>AMICUS is like having a trusted friend who's always there for you. It listens when you need to talk, helps you manage stress, and gives you advice that actually makes sense - all powered by smart AI that understands how you feel.</p>
-                    <p>Our AI companion is designed with empathy at its core. Using advanced natural language processing and emotional intelligence algorithms, AMICUS can recognize subtle cues in your language to provide truly personalized support.</p>
-                    <p>Privacy and security are our top priorities. All conversations with AMICUS are encrypted end-to-end, and we never share your personal data with third parties.</p>
+                    <h3>Our Mission</h3>
+                    <p>AMICUS combines artificial intelligence with therapeutic techniques to provide accessible mental health support to everyone, anytime, anywhere.</p>
+                    
+                    <h3>How It Works</h3>
+                    <div class="how-it-works">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <div class="step-content">
+                                <h4>Emotional Analysis</h4>
+                                <p>Our AI analyzes your emotional state through conversation patterns</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <div class="step-content">
+                                <h4>Personalized Support</h4>
+                                <p>Tailored recommendations based on your unique emotional patterns</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <div class="step-content">
+                                <h4>Progress Tracking</h4>
+                                <p>Monitor your emotional journey with detailed insights</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="features" id="features">
-                    <div class="feature">
-                        <i class="fas fa-comments"></i>
-                        <h3>24/7 Availability</h3>
-                        <p>Always available when you need someone to talk to, day or night, without judgment.</p>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <span class="stat-number">50,000+</span>
+                        <span class="stat-label">Users Helped</span>
                     </div>
-                    
-                    <div class="feature">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Mood Tracking</h3>
-                        <p>Track your emotional patterns over time with insightful visualizations and reports.</p>
+                    <div class="stat-card">
+                        <i class="fas fa-brain"></i>
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">AI Availability</span>
                     </div>
-                    
-                    <div class="feature">
-                        <i class="fas fa-user-shield"></i>
-                        <h3>Privacy Focused</h3>
-                        <p>Your conversations are encrypted and never shared with anyone else.</p>
-                    </div>
-                    
-                    <div class="feature">
-                        <i class="fas fa-lightbulb"></i>
-                        <h3>Personalized Advice</h3>
-                        <p>Receive tailored suggestions based on your unique emotional patterns and needs.</p>
+                    <div class="stat-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Privacy Protected</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Floating Chat Icon -->
-<div class="floating-chat-icon" id="chatIcon">
-    <div class="chat-icon-container">
-        <i class="fas fa-comment-dots"></i>
-        <span class="chat-text">Talk to AMICUS</span>
-    </div>
-    <div class="chat-notification">1</div>
-</div>
-
-<script>
-    // Floating Chat Icon
-    const chatIcon = document.getElementById('chatIcon');
-    
-    chatIcon.addEventListener('click', () => {
-        window.location.href = 'chatbot.html';
-    });
-    
-    // Make the icon draggable on desktop
-    let isDragging = false;
-    let offsetX, offsetY;
-    
-    chatIcon.addEventListener('mousedown', (e) => {
-        if (window.innerWidth > 768) { // Only on desktop
-            isDragging = true;
-            offsetX = e.clientX - chatIcon.getBoundingClientRect().left;
-            offsetY = e.clientY - chatIcon.getBoundingClientRect().top;
-            chatIcon.style.cursor = 'grabbing';
-        }
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (isDragging && window.innerWidth > 768) {
-            const x = e.clientX - offsetX;
-            const y = e.clientY - offsetY;
-            
-            // Keep within viewport bounds
-            const maxX = window.innerWidth - chatIcon.offsetWidth;
-            const maxY = window.innerHeight - chatIcon.offsetHeight;
-            
-            chatIcon.style.left = `${Math.max(20, Math.min(x, maxX - 20))}px`;
-            chatIcon.style.top = `${Math.max(20, Math.min(y, maxY - 20))}px`;
-        }
-    });
-    
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        chatIcon.style.cursor = 'pointer';
-    });
-    
-    // Add bounce animation
-    setInterval(() => {
-        chatIcon.classList.add('bounce');
-        setTimeout(() => {
-            chatIcon.classList.remove('bounce');
-        }, 1000);
-    }, 15000);
-</script>
-
-<style>
-    .floating-chat-icon {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        color: white;
-        border-radius: 50px;
-        padding: 15px 25px;
-        cursor: pointer;
-        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
-        z-index: 1000;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        animation: float 3s ease-in-out infinite;
-    }
-    
-    .floating-chat-icon:hover {
-        transform: scale(1.05);
-        box-shadow: 0 15px 30px rgba(79, 70, 229, 0.5);
-    }
-    
-    .chat-icon-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .floating-chat-icon i {
-        font-size: 1.8rem;
-        animation: pulse 2s infinite;
-    }
-    
-    .chat-text {
-        font-weight: 600;
-        font-size: 1.1rem;
-        white-space: nowrap;
-    }
-    
-    .chat-notification {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        background-color: var(--secondary);
-        color: white;
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-        font-weight: bold;
-        animation: notificationPulse 2s infinite;
-    }
-    
-    .bounce {
-        animation: bounce 1s ease;
-    }
-    
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes notificationPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-    
-    /* Mobile responsiveness for chat icon */
-    @media (max-width: 768px) {
-        .floating-chat-icon {
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 20px;
-        }
-        
-        .chat-text {
-            display: none;
-        }
-        
-        .floating-chat-icon i {
-            font-size: 2rem;
-        }
-    }
-</style>
-
-
-
     <!-- Footer -->
-    <footer id="contact">
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>AMICUS</h3>
-                    <p>An AI-Powered mental health companion designed to provide real-time emotional support, personalized advice, and mood tracking.</p>
-                    <div class="social-icons">
+                    <p>Your AI companion for mental wellness. Available 24/7 with empathy and understanding.</p>
+                    <div class="social-links">
                         <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
                 
                 <div class="footer-section">
                     <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
+                    <a href="#home">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#therapy">Therapy</a>
+                    <a href="#breathing">Breathing</a>
+                    <a href="#meditation">Meditation</a>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Contact Info</h3>
-                    <p><i class="fas fa-envelope"></i> shivamkumar06ind@gmail.com</p>
+                    <h3>Resources</h3>
+                    <a href="#resources">Articles</a>
+                    <a href="#resources">Videos</a>
+                    <a href="#resources">Tools</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> support.amicus@gmail.com</p>
                     <p><i class="fas fa-phone"></i> +91 9310107340</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Delhi, New Delhi. India</p>
+                    <p><i class="fas fa-map-marker"></i> Mental Health AI Companion</p>
                 </div>
             </div>
             
-            <div class="copyright">
-                &copy; 2025 AMICUS. All rights reserved. | AI-Powered Companion
+            <div class="footer-bottom">
+                <p>&copy; 2024 AMICUS. All rights reserved. | AI-Powered Mental Health Companion</p>
             </div>
         </div>
     </footer>
 
-    <script>
-        // Mobile menu toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            const icon = mobileMenuBtn.querySelector('i');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-        });
-        
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                const icon = mobileMenuBtn.querySelector('i');
-                icon.classList.add('fa-bars');
-                icon.classList.remove('fa-times');
-            });
-        });
-        
-        // Header scroll effect
-        const header = document.getElementById('header');
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                header.classList.add('header-scrolled');
-            } else {
-                header.classList.remove('header-scrolled');
-            }
-        });
-        
-        // Animate elements on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                    
-                    // Add specific animations based on element
-                    if (entry.target.classList.contains('feature')) {
-                        entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
-                        entry.target.style.opacity = '0';
-                        setTimeout(() => {
-                            entry.target.style.opacity = '1';
-                        }, 300);
-                    }
-                }
-            });
-        }, observerOptions);
-        
-        // Observe features for animation
-        document.querySelectorAll('.feature').forEach(feature => {
-            observer.observe(feature);
-        });
-        
-        // CTA button animation
-        const ctaButton = document.querySelector('.cta-button');
-        
-        ctaButton.addEventListener('mouseenter', () => {
-            ctaButton.style.animation = 'pulse 0.5s ease';
-        });
-        
-        ctaButton.addEventListener('animationend', () => {
-            ctaButton.style.animation = '';
-        });
-        
-        // Floating elements animation
-        const floatingElements = document.querySelectorAll('.floating-element');
-        
-        floatingElements.forEach((element, index) => {
-            // Randomize animation duration and delay
-            const duration = 3 + Math.random() * 2;
-            const delay = index * 0.3;
-            
-            element.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Page load animation
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.5s ease';
-            
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-        });
-    </script>
-    
+    <!-- Floating Chat Icon -->
+    <div class="floating-chat-icon" id="chatIcon">
+        <div class="chat-icon-container">
+            <i class="fas fa-comment-dots"></i>
+            <span class="chat-text">Talk to AMICUS</span>
+        </div>
+        <div class="chat-notification">NEW</div>
+    </div>
+
+    <!-- Journal Modal -->
+    <div class="modal" id="journalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Emotional Journal</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea placeholder="How are you feeling today? Write freely..." id="journalEntry"></textarea>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="saveJournal">Save Entry</button>
+                    <button class="btn btn-primary" id="analyzeJournal">AI Analysis</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
